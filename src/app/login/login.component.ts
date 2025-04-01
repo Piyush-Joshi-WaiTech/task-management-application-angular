@@ -15,7 +15,11 @@ export class LoginComponent {
   password: string = '';
   showError: boolean = false;
 
-  private adminEmail = 'admin@example.com';
+  signUpEmail: string = '';
+  signUpPassword: string = '';
+  isSignUp: boolean = false;
+
+  private adminEmail = 'Piyush Joshi';
   private adminPassword = 'admin123';
 
   constructor(private router: Router) {}
@@ -32,6 +36,21 @@ export class LoginComponent {
       this.router.navigate(['/home']);
     } else {
       this.showError = true;
+    }
+  }
+
+  toggleSignUp() {
+    this.isSignUp = !this.isSignUp;
+    this.showError = false;
+  }
+
+  signUp() {
+    if (this.signUpEmail.trim() === '' || this.signUpPassword.trim() === '') {
+      this.showError = true;
+    } else {
+      localStorage.setItem('email', this.signUpEmail);
+      localStorage.setItem('loggedIn', 'true');
+      this.router.navigate(['/home']);
     }
   }
 

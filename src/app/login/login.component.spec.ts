@@ -11,6 +11,15 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
+  signUp() {
+    throw new Error('Method not implemented.');
+  }
+  isSignUp: any;
+  signUpEmail: any;
+  signUpPassword: any;
+  toggleSignUp() {
+    throw new Error('Method not implemented.');
+  }
   validateInput() {
     throw new Error('Method not implemented.');
   }
