@@ -1,26 +1,27 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HomeComponent } from './home.component';
+import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { RouterTestingModule } from '@angular/router/testing';
 
-@Component({
-  selector: 'app-home',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css'],
-})
-export class HomeComponent {
-  username: string | null = '';
+describe('HomeComponent', () => {
+  let component: HomeComponent;
+  let fixture: ComponentFixture<HomeComponent>;
 
-  constructor(private router: Router) {
-    this.username = localStorage.getItem('username');
-    if (!this.username) {
-      this.router.navigate(['/login']);
-    }
-  }
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [FormsModule, CommonModule, RouterTestingModule],
+      declarations: [],
+    }).compileComponents();
+  });
 
-  logout() {
-    localStorage.removeItem('username');
-    this.router.navigate(['/login']);
-  }
-}
+  beforeEach(() => {
+    fixture = TestBed.createComponent(HomeComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create the home component', () => {
+    expect(component).toBeTruthy();
+  });
+});
