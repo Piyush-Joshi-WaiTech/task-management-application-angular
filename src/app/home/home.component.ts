@@ -17,9 +17,11 @@ export class HomeComponent {
   project = {
     title: '',
     description: '',
+    createdBy: '',
     manager: '',
     startDate: '',
     endDate: '',
+    teamMember: '',
     dueDate: '',
   };
 
@@ -27,14 +29,19 @@ export class HomeComponent {
   task = {
     title: '',
     assignedTo: '',
-    status: 'Pending',
-    estimatedTime: 0,
-    timeSpent: 0,
+    status: '',
+    estimatedTime: '',
   };
+
   isTaskCreationVisible: boolean = false;
+  showError: boolean = false;
+  showTaskError: boolean = false;
 
   constructor(private router: Router) {
-    this.username = localStorage.getItem('email');
+    if (typeof localStorage !== 'undefined') {
+      this.username = localStorage.getItem('email');
+    }
+
     if (!this.username) {
       this.router.navigate(['/login']);
     }
@@ -46,7 +53,25 @@ export class HomeComponent {
   }
 
   createProject() {
-    console.log('Project created:', this.project);
+    this.validateProjectForm();
+    if (this.showError) {
+      return;
+    }
+
+    console.log('Project Created:', this.project);
+    this.showError = false;
+  }
+
+  validateProjectForm() {
+    this.showError =
+      !this.project.title ||
+      !this.project.description ||
+      !this.project.createdBy ||
+      !this.project.manager ||
+      !this.project.startDate ||
+      !this.project.endDate ||
+      !this.project.teamMember ||
+      !this.project.dueDate;
   }
 
   toggleTaskCreation() {
@@ -54,8 +79,32 @@ export class HomeComponent {
   }
 
   createTask() {
+    this.validateTaskForm();
+
+    if (this.showTaskError) {
+      return;
+    }
+
     this.tasks.push({ ...this.task });
-    console.log('Task created:', this.task);
+    console.log('Task Created:', this.task);
+    alert('Task Created Successfully!');
+
+    // Reset form
+    this.task = { title: '', assignedTo: '', status: '', estimatedTime: '' };
+    this.showTaskError = false;
+  }
+
+  validateTaskForm() {
+    this.showTaskError = true; // **Ensure validation errors are shown**
+
+    if (
+      this.task.title &&
+      this.task.assignedTo &&
+      this.task.status &&
+      this.task.estimatedTime
+    ) {
+      this.showTaskError = false;
+    }
   }
 
   editTask(task: any) {
