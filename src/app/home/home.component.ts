@@ -2,13 +2,15 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { NavbarComponent } from '../navbar/navbar.component';
+import { ProjectService } from '../services/project.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NavbarComponent],
 })
 export class HomeComponent {
   username: string | null = '';
@@ -37,12 +39,15 @@ export class HomeComponent {
   showError: boolean = false;
   showTaskError: boolean = false;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private projectService: ProjectService) {
     if (typeof localStorage !== 'undefined') {
       this.username = localStorage.getItem('email');
     }
 
-    if (!this.username) {
+    if (
+      !localStorage.getItem('loggedIn') ||
+      localStorage.getItem('loggedIn') !== 'true'
+    ) {
       this.router.navigate(['/login']);
     }
   }
@@ -58,7 +63,23 @@ export class HomeComponent {
       return;
     }
 
+    // ✅ Save project using `ProjectService`
+    this.projectService.addProject({ ...this.project, tasks: [] });
+
     console.log('Project Created:', this.project);
+
+    // ✅ Reset form
+    this.project = {
+      title: '',
+      description: '',
+      createdBy: '',
+      manager: '',
+      startDate: '',
+      endDate: '',
+      teamMember: '',
+      dueDate: '',
+    };
+
     this.showError = false;
   }
 
@@ -117,6 +138,7 @@ export class HomeComponent {
       this.tasks.splice(index, 1);
     }
   }
+
   logout() {
     localStorage.removeItem('loggedInUser');
     localStorage.removeItem('loggedIn');

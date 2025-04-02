@@ -22,11 +22,11 @@ export class LoginComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit() {
-    if (typeof window !== 'undefined') {
-      const loggedIn = localStorage.getItem('loggedIn');
-      if (loggedIn === 'true') {
-        this.router.navigate(['/home']);
-      }
+    if (
+      typeof window !== 'undefined' &&
+      localStorage.getItem('loggedIn') === 'true'
+    ) {
+      this.router.navigate(['/home']);
     }
   }
 
@@ -45,7 +45,8 @@ export class LoginComponent implements OnInit {
       );
 
       if (foundUser) {
-        localStorage.setItem('loggedInUser', this.email);
+        localStorage.setItem('email', this.email);
+
         localStorage.setItem('loggedIn', 'true');
         this.router.navigate(['/home']);
       } else {
