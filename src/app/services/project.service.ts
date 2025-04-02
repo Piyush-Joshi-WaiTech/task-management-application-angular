@@ -1,40 +1,73 @@
+// import { Injectable } from '@angular/core';
+
+// @Injectable({
+//   providedIn: 'root',
+// })
+// export class ProjectService {
+//   private storageKey = 'projects'; // Key for localStorage
+
+//   private projects: any[] = [];
+
+//   constructor() {
+//     this.loadProjects();
+//   }
+
+//   // ✅ Load projects from localStorage
+//   private loadProjects() {
+//     if (typeof localStorage !== 'undefined') {
+//       const storedProjects = localStorage.getItem(this.storageKey);
+//       this.projects = storedProjects ? JSON.parse(storedProjects) : [];
+//     }
+//   }
+
+//   // ✅ Get all projects
+//   getProjects(): any[] {
+//     return this.projects;
+//   }
+
+//   // ✅ Add project and save to localStorage
+//   addProject(project: any) {
+//     this.projects.push(project);
+//     if (typeof localStorage !== 'undefined') {
+//       localStorage.setItem(this.storageKey, JSON.stringify(this.projects));
+//     }
+//   }
+
+//   // ✅ Refresh projects from localStorage (for Project Page)
+//   reloadProjects() {
+//     this.loadProjects();
+//   }
+// }
+
 import { Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProjectService {
-  private storageKey = 'projects'; // Key for localStorage
+  constructor() {}
 
-  private projects: any[] = [];
-
-  constructor() {
-    this.loadProjects();
-  }
-
-  // ✅ Load projects from localStorage
-  private loadProjects() {
-    if (typeof localStorage !== 'undefined') {
-      const storedProjects = localStorage.getItem(this.storageKey);
-      this.projects = storedProjects ? JSON.parse(storedProjects) : [];
-    }
-  }
-
-  // ✅ Get all projects
+  // ✅ Get projects for a specific username
   getProjects(): any[] {
-    return this.projects;
+    const loggedInUser = localStorage.getItem('email'); // Get logged-in user
+    if (!loggedInUser) return [];
+
+    const userProjects = localStorage.getItem(`projects_${loggedInUser}`);
+    return userProjects ? JSON.parse(userProjects) : [];
   }
 
-  // ✅ Add project and save to localStorage
+  // ✅ Add project for the logged-in user
   addProject(project: any) {
-    this.projects.push(project);
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem(this.storageKey, JSON.stringify(this.projects));
-    }
+    const loggedInUser = localStorage.getItem('email'); // Get logged-in user
+    if (!loggedInUser) return;
+
+    let projects = this.getProjects();
+    projects.push(project);
+    localStorage.setItem(`projects_${loggedInUser}`, JSON.stringify(projects));
   }
 
-  // ✅ Refresh projects from localStorage (for Project Page)
+  // ✅ Reload projects for the logged-in user
   reloadProjects() {
-    this.loadProjects();
+    return this.getProjects();
   }
 }
