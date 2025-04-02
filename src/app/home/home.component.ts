@@ -95,7 +95,7 @@ export class HomeComponent {
   }
 
   validateTaskForm() {
-    this.showTaskError = true; // **Ensure validation errors are shown**
+    this.showTaskError = true;
 
     if (
       this.task.title &&
@@ -116,5 +116,10 @@ export class HomeComponent {
     if (index > -1) {
       this.tasks.splice(index, 1);
     }
+  }
+  logout() {
+    localStorage.removeItem('loggedInUser');
+    localStorage.removeItem('loggedIn');
+    this.router.navigate(['/login']);
   }
 }
