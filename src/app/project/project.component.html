@@ -28,7 +28,11 @@
     </div>
 
     <div class="col-12" *ngFor="let project of projects">
-      <div class="card mb-3 shadow-sm">
+      <div
+        class="card mb-3 shadow-sm"
+        (click)="goToTasks(project)"
+        style="cursor: pointer"
+      >
         <div class="card-body">
           <div class="row align-items-center">
             <div class="col-md-3">
@@ -44,7 +48,7 @@
 
             <div class="col-md-3">
               <p><strong>Team Members:</strong> {{ project.teamMember }}</p>
-              <p><strong>Tasks:</strong> {{ project.tasks?.length || 0 }}</p>
+              <p><strong>Tasks:</strong> {{ project.taskCount }}</p>
             </div>
 
             <div class="col-md-3">

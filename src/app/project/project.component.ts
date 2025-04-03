@@ -147,6 +147,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router'; // ✅ Import Router
 import { NavbarComponent } from '../navbar/navbar.component';
 import { ProjectService } from '../services/project.service';
 
@@ -175,7 +176,7 @@ export class ProjectComponent implements OnInit {
   notification: string | null = null;
   notificationType: 'success' | 'error' | null = null;
 
-  constructor(private projectService: ProjectService) {}
+  constructor(private projectService: ProjectService, private router: Router) {}
 
   ngOnInit() {
     this.loadUserProjects();
@@ -220,8 +221,17 @@ export class ProjectComponent implements OnInit {
     }, 3000);
   }
 
-  // ✅ Load projects for the logged-in user only
   private loadUserProjects() {
     this.projects = this.projectService.getProjects();
+
+    // ✅ Fetch the task count for each project
+    this.projects.forEach((project) => {
+      const storedTasks = localStorage.getItem(`tasks_${project.title}`);
+      project.taskCount = storedTasks ? JSON.parse(storedTasks).length : 0;
+    });
+  }
+
+  goToTasks(project: any) {
+    this.router.navigate(['/tasks', encodeURIComponent(project.title)]);
   }
 }

@@ -85,9 +85,10 @@ export class LoginComponent implements OnInit {
       });
       localStorage.setItem('users', JSON.stringify(storedUsers));
 
-      localStorage.setItem('loggedInUser', this.signUpEmail);
-      localStorage.setItem('loggedIn', 'true');
-      this.router.navigate(['/home']);
+      alert('Sign-up successful! Please log in.');
+      this.isSignUp = false;
+      this.signUpEmail = '';
+      this.signUpPassword = '';
     }
   }
 
