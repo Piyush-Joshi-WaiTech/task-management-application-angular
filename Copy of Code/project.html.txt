@@ -1,0 +1,193 @@
+<app-navbar></app-navbar>
+
+<div class="container mt-4">
+  <h2 class="mb-4">Your Projects</h2>
+
+  <!-- Updated Notification -->
+  <div
+    *ngIf="notification"
+    class="alert alert-dismissible fade show"
+    [ngClass]="
+      notificationType === 'success' ? 'alert-success' : 'alert-danger'
+    "
+    role="alert"
+  >
+    {{ notification }}
+    <button
+      type="button"
+      class="btn-close"
+      (click)="notification = null"
+    ></button>
+  </div>
+
+  <div class="row">
+    <div class="col-12" *ngIf="projects.length === 0">
+      <p class="text-muted">
+        No projects available. Create a new project below.
+      </p>
+    </div>
+
+    <div class="col-12" *ngFor="let project of projects">
+      <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-md-3">
+              <h5 class="fw-bold text-primary">{{ project.title }}</h5>
+              <p class="text-muted">Created by: {{ project.createdBy }}</p>
+            </div>
+
+            <div class="col-md-3">
+              <p><strong>Start Date:</strong> {{ project.startDate }}</p>
+              <p><strong>End Date:</strong> {{ project.endDate }}</p>
+              <p><strong>Due Date:</strong> {{ project.dueDate }}</p>
+            </div>
+
+            <div class="col-md-3">
+              <p><strong>Team Members:</strong> {{ project.teamMember }}</p>
+              <p><strong>Tasks:</strong> {{ project.tasks?.length || 0 }}</p>
+            </div>
+
+            <div class="col-md-3">
+              <p><strong>Project Manager:</strong> {{ project.manager }}</p>
+              <p class="text-muted">{{ project.description }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Project Form -->
+  <div class="mt-4">
+    <h3>Create a New Project</h3>
+
+    <form (ngSubmit)="createProject()">
+      <div class="mb-3">
+        <input
+          type="text"
+          [(ngModel)]="project.title"
+          name="title"
+          class="form-control"
+          placeholder="Project Title"
+          required
+        />
+      </div>
+
+      <div class="mb-3">
+        <textarea
+          [(ngModel)]="project.description"
+          name="description"
+          class="form-control"
+          placeholder="Project Description"
+          required
+        ></textarea>
+      </div>
+
+      <div class="mb-3">
+        <input
+          type="text"
+          [(ngModel)]="project.createdBy"
+          name="createdBy"
+          class="form-control"
+          placeholder="Created By"
+          required
+        />
+      </div>
+
+      <button type="submit" class="btn btn-primary">Create Project</button>
+    </form>
+  </div>
+</div>
+
+<!-- <div class="mt-4">
+    <h3>Create New Project</h3>
+    <form (ngSubmit)="createProject()">
+      <div class="mb-3">
+        <label class="form-label">Project Title</label>
+        <input
+          type="text"
+          [(ngModel)]="project.title"
+          name="title"
+          class="form-control"
+          required
+        />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea
+          [(ngModel)]="project.description"
+          name="description"
+          class="form-control"
+          required
+        ></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Created By</label>
+        <input
+          type="text"
+          [(ngModel)]="project.createdBy"
+          name="createdBy"
+          class="form-control"
+          required
+        />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Project Manager</label>
+        <input
+          type="text"
+          [(ngModel)]="project.manager"
+          name="manager"
+          class="form-control"
+        />
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label class="form-label">Start Date</label>
+          <input
+            type="date"
+            [(ngModel)]="project.startDate"
+            name="startDate"
+            class="form-control"
+          />
+        </div>
+        <div class="col">
+          <label class="form-label">End Date</label>
+          <input
+            type="date"
+            [(ngModel)]="project.endDate"
+            name="endDate"
+            class="form-control"
+          />
+        </div>
+        <div class="col">
+          <label class="form-label">Due Date</label>
+          <input
+            type="date"
+            [(ngModel)]="project.dueDate"
+            name="dueDate"
+            class="form-control"
+          />
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Team Members</label>
+        <input
+          type="number"
+          [(ngModel)]="project.teamMember"
+          name="teamMember"
+          class="form-control"
+        />
+      </div>
+
+      <button type="submit" class="btn btn-primary">Create Project</button>
+    </form>
+  </div> -->
+<!-- <div *ngIf="notification" class="alert alert-info text-center">
+    {{ notification }}
+  </div>
+ -->
