@@ -63,12 +63,12 @@ export class HomeComponent {
       return;
     }
 
-    // ✅ Save project using `ProjectService`
+
     this.projectService.addProject({ ...this.project, tasks: [] });
 
     console.log('Project Created:', this.project);
 
-    // ✅ Reset form
+
     this.project = {
       title: '',
       description: '',

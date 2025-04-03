@@ -1,73 +1,7 @@
-// // import { Component } from '@angular/core';
-// // import { CommonModule } from '@angular/common';
-// // import { FormsModule } from '@angular/forms';
-// // import { NavbarComponent } from '../navbar/navbar.component';
-// // import { ProjectService } from '../services/project.service';
-
-// // @Component({
-// //   selector: 'app-project',
-// //   standalone: true,
-// //   imports: [CommonModule, FormsModule, NavbarComponent],
-// //   templateUrl: './project.component.html',
-// //   styleUrls: ['./project.component.css'],
-// // })
-// // export class ProjectComponent {
-// //   projects: any[] = [];
-// //   project = {
-// //     title: '',
-// //     description: '',
-// //     createdBy: '',
-// //     manager: '',
-// //     startDate: '',
-// //     endDate: '',
-// //     dueDate: '',
-// //     teamMember: 0,
-// //     tasks: [],
-// //   }; // ✅ Added 'project' property back
-
-// //   notification: string | null = null;
-
-// //   constructor(private projectService: ProjectService) {
-// //     this.projects = this.projectService.getProjects();
-// //   }
-
-// //   createProject() {
-// //     if (
-// //       !this.project.title.trim() ||
-// //       !this.project.description.trim() ||
-// //       !this.project.createdBy.trim()
-// //     ) {
-// //       this.showNotification('⚠️ Please fill in all required fields.', 'error');
-// //       return;
-// //     }
-
-// //     this.projects.push({ ...this.project, tasks: [] });
-
-// //     this.showNotification('✅ Project created successfully!', 'success');
-
-// //     this.project = {
-// //       title: '',
-// //       description: '',
-// //       createdBy: '',
-// //       manager: '',
-// //       startDate: '',
-// //       endDate: '',
-// //       dueDate: '',
-// //       teamMember: 0,
-// //       tasks: [],
-// //     };
-// //   }
-
-// //   showNotification(message: string, type: 'success' | 'error') {
-// //     this.notification = message;
-// //     setTimeout(() => {
-// //       this.notification = null;
-// //     }, 3000);
-// //   }
-// // }
 // import { Component, OnInit } from '@angular/core';
 // import { CommonModule } from '@angular/common';
 // import { FormsModule } from '@angular/forms';
+// import { Router } from '@angular/router';
 // import { NavbarComponent } from '../navbar/navbar.component';
 // import { ProjectService } from '../services/project.service';
 
@@ -96,11 +30,10 @@
 //   notification: string | null = null;
 //   notificationType: 'success' | 'error' | null = null;
 
-//   constructor(private projectService: ProjectService) {}
+//   constructor(private projectService: ProjectService, private router: Router) {}
 
 //   ngOnInit() {
-//     this.projectService.reloadProjects(); // ✅ Refresh from localStorage
-//     this.projects = this.projectService.getProjects(); // ✅ Load projects
+//     this.loadUserProjects();
 //   }
 
 //   createProject() {
@@ -113,13 +46,12 @@
 //       return;
 //     }
 
-//     this.projectService.addProject({ ...this.project, tasks: [] }); // ✅ Save project
+//     this.projectService.addProject({ ...this.project, tasks: [] });
 
-//     this.projects = this.projectService.getProjects();
+//     this.loadUserProjects(); //
 
 //     this.showNotification('✅ Project created successfully!', 'success');
 
-//     // ✅ Reset form
 //     this.project = {
 //       title: '',
 //       description: '',
@@ -135,19 +67,31 @@
 
 //   showNotification(message: string, type: 'success' | 'error') {
 //     this.notification = message;
-//     this.notificationType = type; // ✅ No more errors
+//     this.notificationType = type;
 
 //     setTimeout(() => {
 //       this.notification = null;
 //       this.notificationType = null;
 //     }, 3000);
 //   }
-// }
 
+//   private loadUserProjects() {
+//     this.projects = this.projectService.getProjects();
+
+//     this.projects.forEach((project) => {
+//       const storedTasks = localStorage.getItem(`tasks_${project.title}`);
+//       project.taskCount = storedTasks ? JSON.parse(storedTasks).length : 0;
+//     });
+//   }
+
+//   goToTasks(project: any) {
+//     this.router.navigate(['/tasks', encodeURIComponent(project.title)]);
+//   }
+// }
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router'; // ✅ Import Router
+import { Router } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { ProjectService } from '../services/project.service';
 
@@ -160,6 +104,9 @@ import { ProjectService } from '../services/project.service';
 })
 export class ProjectComponent implements OnInit {
   projects: any[] = [];
+  editingIndex: number | null = null;
+  notification: string | null = null;
+  notificationType: 'success' | 'error' | null = null;
 
   project = {
     title: '',
@@ -172,9 +119,6 @@ export class ProjectComponent implements OnInit {
     teamMember: 0,
     tasks: [],
   };
-
-  notification: string | null = null;
-  notificationType: 'success' | 'error' | null = null;
 
   constructor(private projectService: ProjectService, private router: Router) {}
 
@@ -192,12 +136,72 @@ export class ProjectComponent implements OnInit {
       return;
     }
 
-    this.projectService.addProject({ ...this.project, tasks: [] });
+    const loggedInUser = localStorage.getItem('email');
+    if (!loggedInUser) return;
 
-    this.loadUserProjects(); // ✅ Reload projects for the logged-in user
+    let projects = this.projectService.getProjects();
 
-    this.showNotification('✅ Project created successfully!', 'success');
+    if (this.editingIndex !== null) {
+      // Update the existing project
+      projects[this.editingIndex] = { ...this.project };
+      this.showNotification('✅ Project updated successfully!', 'success');
+      this.editingIndex = null;
+    } else {
+      // Add new project
+      projects.push({ ...this.project, tasks: [] });
+      this.showNotification('✅ Project created successfully!', 'success');
+    }
 
+    // Save updated projects back to localStorage
+    localStorage.setItem(`projects_${loggedInUser}`, JSON.stringify(projects));
+
+    this.loadUserProjects();
+    this.resetProjectForm();
+  }
+
+  editProject(index: number, event: Event) {
+    event.stopPropagation(); // Prevent navigation when clicking "Edit"
+    this.project = { ...this.projects[index] };
+    this.editingIndex = index;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  deleteProject(index: number, event: Event) {
+    event.stopPropagation(); // Prevent navigation when clicking "Delete"
+
+    const loggedInUser = localStorage.getItem('email');
+    if (!loggedInUser) return;
+
+    const projectTitle = this.projects[index].title;
+
+    if (
+      confirm(`Are you sure you want to delete the project "${projectTitle}"?`)
+    ) {
+      this.projects.splice(index, 1);
+
+      // Update localStorage after deletion
+      localStorage.setItem(
+        `projects_${loggedInUser}`,
+        JSON.stringify(this.projects)
+      );
+
+      this.showNotification('✅ Project deleted successfully!', 'success');
+    }
+  }
+
+  private loadUserProjects() {
+    this.projects = this.projectService.getProjects();
+    this.projects.forEach((project) => {
+      const storedTasks = localStorage.getItem(`tasks_${project.title}`);
+      project.taskCount = storedTasks ? JSON.parse(storedTasks).length : 0;
+    });
+  }
+
+  private saveProjectsToLocalStorage() {
+    localStorage.setItem('projects', JSON.stringify(this.projects));
+  }
+
+  private resetProjectForm() {
     this.project = {
       title: '',
       description: '',
@@ -214,24 +218,57 @@ export class ProjectComponent implements OnInit {
   showNotification(message: string, type: 'success' | 'error') {
     this.notification = message;
     this.notificationType = type;
-
     setTimeout(() => {
       this.notification = null;
       this.notificationType = null;
     }, 3000);
   }
 
-  private loadUserProjects() {
-    this.projects = this.projectService.getProjects();
-
-    // ✅ Fetch the task count for each project
-    this.projects.forEach((project) => {
-      const storedTasks = localStorage.getItem(`tasks_${project.title}`);
-      project.taskCount = storedTasks ? JSON.parse(storedTasks).length : 0;
-    });
-  }
-
   goToTasks(project: any) {
     this.router.navigate(['/tasks', encodeURIComponent(project.title)]);
+  }
+
+  // ✅ Added updateProject() without changing original code
+  updateProject() {
+    if (
+      !this.project.title.trim() ||
+      !this.project.description.trim() ||
+      !this.project.createdBy.trim()
+    ) {
+      this.showNotification('⚠️ Please fill in all required fields.', 'error');
+      return;
+    }
+
+    const loggedInUser = localStorage.getItem('email');
+    if (!loggedInUser) return;
+
+    let projects = this.projectService.getProjects();
+
+    if (this.editingIndex !== null) {
+      // Update the existing project
+      projects[this.editingIndex] = { ...this.project };
+      this.showNotification('✅ Project updated successfully!', 'success');
+      this.editingIndex = null;
+    }
+
+    // Save updated projects back to localStorage
+    localStorage.setItem(`projects_${loggedInUser}`, JSON.stringify(projects));
+
+    this.loadUserProjects();
+    this.resetProjectForm();
+
+    // Close the Bootstrap modal after update
+    const modalElement = document.getElementById('editProjectModal');
+    if (modalElement) {
+      (modalElement as any).classList.remove('show');
+      modalElement.setAttribute('aria-hidden', 'true');
+      modalElement.setAttribute('style', 'display: none;');
+
+      // Remove modal backdrop
+      const modalBackdrop = document.querySelector('.modal-backdrop');
+      if (modalBackdrop) {
+        modalBackdrop.remove();
+      }
+    }
   }
 }

@@ -1,10 +1,10 @@
-/* Navbar Background */
+
 .navbar {
   background: linear-gradient(90deg, #1a1a1a, #333);
   padding: 12px;
 }
 
-/* Navbar Brand (Logo & Text) */
+
 .logo-img {
   width: 40px;
   height: 40px;
@@ -15,13 +15,13 @@
   font-size: 1rem;
 }
 
-/* Navbar Text (Home, Projects, About) */
+
 .nav-text {
-  padding-top: 4px; /* Move text slightly downward */
+  padding-top: 4px;
   font-size: 1rem;
 }
 
-/* Profile Icon in Navbar */
+
 .profile-pic-navbar {
   width: 40px;
   height: 40px;
@@ -29,7 +29,7 @@
   cursor: pointer;
 }
 
-/* Dropdown User Profile Box */
+
 .dropdown-menu-custom {
   position: absolute;
   right: 0;
@@ -45,7 +45,7 @@
   display: block;
 }
 
-/* User Profile Box */
+
 .profile-box {
   text-align: center;
 }
@@ -65,7 +65,7 @@
   margin-bottom: 10px;
 }
 
-/* Logout Button */
+
 .logout-btn {
   background: #dc3545;
   color: white;
@@ -79,7 +79,6 @@
   background: #c82333;
 }
 
-/* Responsive Styles */
 @media (max-width: 768px) {
   .dropdown-menu-custom {
     width: 100%;

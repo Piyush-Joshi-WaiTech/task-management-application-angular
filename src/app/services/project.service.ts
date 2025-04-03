@@ -64,7 +64,6 @@ export class ProjectService {
     localStorage.setItem(`projects_${loggedInUser}`, JSON.stringify(projects));
   }
 
-  // ✅ Reload projects for the logged-in user
   reloadProjects() {
     return this.getProjects();
   }

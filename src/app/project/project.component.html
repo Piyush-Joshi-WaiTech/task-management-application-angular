@@ -27,7 +27,7 @@
       </p>
     </div>
 
-    <div class="col-12" *ngFor="let project of projects">
+    <div class="col-12" *ngFor="let project of projects; let i = index">
       <div
         class="card mb-3 shadow-sm"
         (click)="goToTasks(project)"
@@ -39,24 +39,37 @@
               <h5 class="fw-bold text-primary">{{ project.title }}</h5>
               <p class="text-muted">Created by: {{ project.createdBy }}</p>
             </div>
-
             <div class="col-md-3">
               <p><strong>Start Date:</strong> {{ project.startDate }}</p>
               <p><strong>End Date:</strong> {{ project.endDate }}</p>
               <p><strong>Due Date:</strong> {{ project.dueDate }}</p>
             </div>
-
             <div class="col-md-3">
               <p><strong>Team Members:</strong> {{ project.teamMember }}</p>
               <p><strong>Tasks:</strong> {{ project.taskCount }}</p>
             </div>
-
             <div class="col-md-3">
               <p><strong>Project Manager:</strong> {{ project.manager }}</p>
               <p class="text-muted">{{ project.description }}</p>
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="d-flex justify-content-end gap-2 mb-3">
+        <button
+          class="btn btn-sm btn-outline-primary"
+          (click)="editProject(i, $event)"
+        >
+          ✏️ Edit
+        </button>
+        <button
+          class="btn btn-sm btn-outline-danger"
+          (click)="deleteProject(i, $event)"
+        >
+          ❌ Delete
+        </button>
       </div>
     </div>
   </div>
@@ -102,96 +115,3 @@
     </form>
   </div>
 </div>
-
-<!-- <div class="mt-4">
-    <h3>Create New Project</h3>
-    <form (ngSubmit)="createProject()">
-      <div class="mb-3">
-        <label class="form-label">Project Title</label>
-        <input
-          type="text"
-          [(ngModel)]="project.title"
-          name="title"
-          class="form-control"
-          required
-        />
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Description</label>
-        <textarea
-          [(ngModel)]="project.description"
-          name="description"
-          class="form-control"
-          required
-        ></textarea>
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Created By</label>
-        <input
-          type="text"
-          [(ngModel)]="project.createdBy"
-          name="createdBy"
-          class="form-control"
-          required
-        />
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Project Manager</label>
-        <input
-          type="text"
-          [(ngModel)]="project.manager"
-          name="manager"
-          class="form-control"
-        />
-      </div>
-
-      <div class="row">
-        <div class="col">
-          <label class="form-label">Start Date</label>
-          <input
-            type="date"
-            [(ngModel)]="project.startDate"
-            name="startDate"
-            class="form-control"
-          />
-        </div>
-        <div class="col">
-          <label class="form-label">End Date</label>
-          <input
-            type="date"
-            [(ngModel)]="project.endDate"
-            name="endDate"
-            class="form-control"
-          />
-        </div>
-        <div class="col">
-          <label class="form-label">Due Date</label>
-          <input
-            type="date"
-            [(ngModel)]="project.dueDate"
-            name="dueDate"
-            class="form-control"
-          />
-        </div>
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Team Members</label>
-        <input
-          type="number"
-          [(ngModel)]="project.teamMember"
-          name="teamMember"
-          class="form-control"
-        />
-      </div>
-
-      <button type="submit" class="btn btn-primary">Create Project</button>
-    </form>
-  </div> -->
-<!-- <div *ngIf="notification" class="alert alert-info text-center">
-    {{ notification }}
-  </div>
- -->
