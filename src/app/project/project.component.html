@@ -58,12 +58,10 @@
 
       <!-- Action Buttons -->
       <div class="d-flex justify-content-end gap-2 mb-3">
-        <button
-          class="btn btn-sm btn-outline-primary"
-          (click)="editProject(i, $event)"
+        <a [routerLink]="['/projects/edit', i]" class="btn btn-primary"
+          >✏️ Edit</a
         >
-          ✏️ Edit
-        </button>
+
         <button
           class="btn btn-sm btn-outline-danger"
           (click)="deleteProject(i, $event)"
@@ -75,7 +73,7 @@
   </div>
 
   <!-- Create Project Form -->
-  <div class="mt-4">
+  <!-- <div class="mt-4">
     <h3>Create a New Project</h3>
 
     <form (ngSubmit)="createProject()">
@@ -113,5 +111,5 @@
 
       <button type="submit" class="btn btn-primary">Create Project</button>
     </form>
-  </div>
+  </div> -->
 </div>

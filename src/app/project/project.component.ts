@@ -1,104 +1,14 @@
-// import { Component, OnInit } from '@angular/core';
-// import { CommonModule } from '@angular/common';
-// import { FormsModule } from '@angular/forms';
-// import { Router } from '@angular/router';
-// import { NavbarComponent } from '../navbar/navbar.component';
-// import { ProjectService } from '../services/project.service';
-
-// @Component({
-//   selector: 'app-project',
-//   standalone: true,
-//   imports: [CommonModule, FormsModule, NavbarComponent],
-//   templateUrl: './project.component.html',
-//   styleUrls: ['./project.component.css'],
-// })
-// export class ProjectComponent implements OnInit {
-//   projects: any[] = [];
-
-//   project = {
-//     title: '',
-//     description: '',
-//     createdBy: '',
-//     manager: '',
-//     startDate: '',
-//     endDate: '',
-//     dueDate: '',
-//     teamMember: 0,
-//     tasks: [],
-//   };
-
-//   notification: string | null = null;
-//   notificationType: 'success' | 'error' | null = null;
-
-//   constructor(private projectService: ProjectService, private router: Router) {}
-
-//   ngOnInit() {
-//     this.loadUserProjects();
-//   }
-
-//   createProject() {
-//     if (
-//       !this.project.title.trim() ||
-//       !this.project.description.trim() ||
-//       !this.project.createdBy.trim()
-//     ) {
-//       this.showNotification('⚠️ Please fill in all required fields.', 'error');
-//       return;
-//     }
-
-//     this.projectService.addProject({ ...this.project, tasks: [] });
-
-//     this.loadUserProjects(); //
-
-//     this.showNotification('✅ Project created successfully!', 'success');
-
-//     this.project = {
-//       title: '',
-//       description: '',
-//       createdBy: '',
-//       manager: '',
-//       startDate: '',
-//       endDate: '',
-//       dueDate: '',
-//       teamMember: 0,
-//       tasks: [],
-//     };
-//   }
-
-//   showNotification(message: string, type: 'success' | 'error') {
-//     this.notification = message;
-//     this.notificationType = type;
-
-//     setTimeout(() => {
-//       this.notification = null;
-//       this.notificationType = null;
-//     }, 3000);
-//   }
-
-//   private loadUserProjects() {
-//     this.projects = this.projectService.getProjects();
-
-//     this.projects.forEach((project) => {
-//       const storedTasks = localStorage.getItem(`tasks_${project.title}`);
-//       project.taskCount = storedTasks ? JSON.parse(storedTasks).length : 0;
-//     });
-//   }
-
-//   goToTasks(project: any) {
-//     this.router.navigate(['/tasks', encodeURIComponent(project.title)]);
-//   }
-// }
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { ProjectService } from '../services/project.service';
 
 @Component({
   selector: 'app-project',
   standalone: true,
-  imports: [CommonModule, FormsModule, NavbarComponent],
+  imports: [CommonModule, FormsModule, NavbarComponent, RouterModule],
   templateUrl: './project.component.html',
   styleUrls: ['./project.component.css'],
 })
@@ -157,13 +67,6 @@ export class ProjectComponent implements OnInit {
 
     this.loadUserProjects();
     this.resetProjectForm();
-  }
-
-  editProject(index: number, event: Event) {
-    event.stopPropagation(); // Prevent navigation when clicking "Edit"
-    this.project = { ...this.projects[index] };
-    this.editingIndex = index;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   deleteProject(index: number, event: Event) {

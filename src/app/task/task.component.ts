@@ -1,18 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
 
 @Component({
   selector: 'app-task',
   standalone: true,
-  imports: [CommonModule, FormsModule, NavbarComponent],
+  imports: [CommonModule, FormsModule, NavbarComponent, RouterModule],
   templateUrl: './task.component.html',
   styleUrls: ['./task.component.css'],
 })
 export class TaskComponent implements OnInit {
   projectTitle: string = '';
+  projectId: string = ''; // ✅ Added projectId
   tasks: any[] = [];
   showTaskForm: boolean = false;
 
@@ -33,6 +35,8 @@ export class TaskComponent implements OnInit {
     this.projectTitle = decodeURIComponent(
       this.route.snapshot.paramMap.get('projectTitle') || ''
     );
+
+    this.projectId = this.route.snapshot.paramMap.get('projectId') || ''; // ✅ Extract projectId
     this.loadTasks();
   }
 
@@ -73,6 +77,33 @@ export class TaskComponent implements OnInit {
       this.notification = null;
       this.notificationType = null;
     }, 3000);
+  }
+  deleteTask(index: number) {
+    const confirmed = confirm('Are you sure you want to delete this task?');
+    if (!confirmed) return;
+
+    const loggedInUser = localStorage.getItem('email');
+    if (!loggedInUser) return;
+
+    let projects = JSON.parse(
+      localStorage.getItem(`projects_${loggedInUser}`) || '[]'
+    );
+
+    if (this.projectId !== null && projects[this.projectId]?.tasks) {
+      projects[this.projectId].tasks.splice(index, 1);
+      localStorage.setItem(
+        `projects_${loggedInUser}`,
+        JSON.stringify(projects)
+      );
+
+      this.tasks = projects[this.projectId].tasks; // Update UI
+      this.notification = '✅ Task deleted successfully!';
+      this.notificationType = 'success';
+
+      setTimeout(() => {
+        this.notification = null;
+      }, 3000);
+    }
   }
 
   getStatusClass(status: string) {

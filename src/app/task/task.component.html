@@ -72,7 +72,7 @@
       <p class="text-muted">No tasks yet. Click "Create Task" to add one.</p>
     </div>
 
-    <div class="col-12" *ngFor="let task of tasks">
+    <div class="col-12" *ngFor="let task of tasks; index as i">
       <div class="card mb-3 shadow-sm">
         <div class="card-body">
           <div class="row align-items-center">
@@ -116,6 +116,18 @@
                   <p class="mb-0">
                     <strong>Time Spent:</strong> {{ task.timeSpent }} hrs
                   </p>
+                </div>
+                <div class="col-12 col-md-auto text-center mt-2 mt-md-0">
+                  <a
+                    [routerLink]="['/tasks', projectId, 'edit', i]"
+                    class="btn btn-primary me-2"
+                  >
+                    ✏️ Edit
+                  </a>
+
+                  <button class="btn btn-danger" (click)="deleteTask(i)">
+                    🗑 Delete
+                  </button>
                 </div>
               </div>
             </div>
