@@ -1,5 +1,0 @@
-{
-  "rewrites": [
-    { "source": "/tasks/:projectTitle", "destination": "/index.html" }
-  ]
-}
