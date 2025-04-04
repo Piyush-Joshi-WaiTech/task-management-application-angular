@@ -12,11 +12,11 @@ import { NavbarComponent } from '../navbar/navbar.component';
   templateUrl: './task.component.html',
   styleUrls: ['./task.component.css'],
 })
+// Keep your existing imports...
 export class TaskComponent implements OnInit {
   projectTitle: string = '';
-  projectId: string = ''; // ✅ Added projectId
+  projectId: string = '';
   tasks: any[] = [];
-  showTaskForm: boolean = false;
 
   task = {
     title: '',
@@ -26,8 +26,15 @@ export class TaskComponent implements OnInit {
     timeSpent: 0,
   };
 
+  showTaskForm: boolean = false;
   notification: string | null = null;
   notificationType: 'success' | 'error' | null = null;
+
+  // Add this to not interfere with Edit modal logic
+  editMode: boolean = false;
+  editTask: any = {};
+  editIndex: number = -1;
+  openModal: any;
 
   constructor(private route: ActivatedRoute) {}
 
@@ -35,8 +42,7 @@ export class TaskComponent implements OnInit {
     this.projectTitle = decodeURIComponent(
       this.route.snapshot.paramMap.get('projectTitle') || ''
     );
-
-    this.projectId = this.route.snapshot.paramMap.get('projectId') || ''; // ✅ Extract projectId
+    this.projectId = this.route.snapshot.paramMap.get('projectId') || '';
     this.loadTasks();
   }
 
@@ -60,6 +66,7 @@ export class TaskComponent implements OnInit {
 
     this.showNotification('✅ Task created successfully!', 'success');
 
+    // Reset form
     this.task = {
       title: '',
       assignedTo: '',
@@ -78,32 +85,18 @@ export class TaskComponent implements OnInit {
       this.notificationType = null;
     }, 3000);
   }
+
   deleteTask(index: number) {
     const confirmed = confirm('Are you sure you want to delete this task?');
     if (!confirmed) return;
 
-    const loggedInUser = localStorage.getItem('email');
-    if (!loggedInUser) return;
-
-    let projects = JSON.parse(
-      localStorage.getItem(`projects_${loggedInUser}`) || '[]'
+    this.tasks.splice(index, 1);
+    localStorage.setItem(
+      `tasks_${this.projectTitle}`,
+      JSON.stringify(this.tasks)
     );
 
-    if (this.projectId !== null && projects[this.projectId]?.tasks) {
-      projects[this.projectId].tasks.splice(index, 1);
-      localStorage.setItem(
-        `projects_${loggedInUser}`,
-        JSON.stringify(projects)
-      );
-
-      this.tasks = projects[this.projectId].tasks; // Update UI
-      this.notification = '✅ Task deleted successfully!';
-      this.notificationType = 'success';
-
-      setTimeout(() => {
-        this.notification = null;
-      }, 3000);
-    }
+    this.showNotification('✅ Task deleted successfully!', 'success');
   }
 
   getStatusClass(status: string) {
@@ -112,5 +105,30 @@ export class TaskComponent implements OnInit {
       'text-warning': status === 'Medium',
       'text-primary': status === 'Low',
     };
+  }
+
+  // Your existing edit modal logic here (unchanged)
+  openEditModal(index: number) {
+    this.editIndex = index;
+    this.editTask = { ...this.tasks[index] };
+    this.editMode = true;
+  }
+
+  closeEditModal() {
+    this.editMode = false;
+    this.editTask = {};
+    this.editIndex = -1;
+  }
+
+  updateTask() {
+    if (this.editIndex > -1) {
+      this.tasks[this.editIndex] = { ...this.editTask };
+      localStorage.setItem(
+        `tasks_${this.projectTitle}`,
+        JSON.stringify(this.tasks)
+      );
+      this.showNotification('✅ Task updated successfully!', 'success');
+    }
+    this.closeEditModal();
   }
 }

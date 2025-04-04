@@ -25,7 +25,7 @@
     ></button>
   </div>
 
-  <!-- Task Creation Form -->
+  <!-- Task Creation Form (Modal) -->
   <div *ngIf="showTaskForm" class="card p-3 mb-4">
     <h5>Create a New Task</h5>
 
@@ -118,12 +118,12 @@
                   </p>
                 </div>
                 <div class="col-12 col-md-auto text-center mt-2 mt-md-0">
-                  <a
-                    [routerLink]="['/tasks', projectId, 'edit', i]"
+                  <button
                     class="btn btn-primary me-2"
+                    (click)="openEditModal(i)"
                   >
                     ✏️ Edit
-                  </a>
+                  </button>
 
                   <button class="btn btn-danger" (click)="deleteTask(i)">
                     🗑 Delete
@@ -132,6 +132,77 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Edit Task Modal -->
+  <div class="modal-backdrop" *ngIf="editMode"></div>
+
+  <div class="modal d-block" *ngIf="editMode">
+    <div class="modal-dialog">
+      <div class="modal-content p-3">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Task</h5>
+          <button
+            type="button"
+            class="btn-close"
+            (click)="closeEditModal()"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Title</label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="editTask.title"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Assigned To</label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="editTask.assignedTo"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Status</label>
+            <select class="form-select" [(ngModel)]="editTask.status">
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Estimate (hrs)</label>
+            <input
+              type="number"
+              class="form-control"
+              [(ngModel)]="editTask.estimate"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Time Spent (hrs)</label>
+            <input
+              type="number"
+              class="form-control"
+              [(ngModel)]="editTask.timeSpent"
+            />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-success" (click)="updateTask()">
+            ✔️ Update
+          </button>
+          <button class="btn btn-secondary" (click)="closeEditModal()">
+            ❌ Cancel
+          </button>
         </div>
       </div>
     </div>
