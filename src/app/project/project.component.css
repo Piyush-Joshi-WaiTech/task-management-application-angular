@@ -17,6 +17,12 @@
   background-color: #f44336;
   color: white;
 }
+.card:hover {
+  background-color: #f0f8ff;
+  transform: scale(1.01);
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 0 15px rgba(0, 123, 255, 0.3);
+}
 
 @keyframes fadeInOut {
   0% {

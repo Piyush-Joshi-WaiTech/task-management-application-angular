@@ -12,7 +12,54 @@ body.dark-mode {
   margin-bottom: 30px;
 }
 .create-section {
-  margin-top: -45px;
+  background-color: #f4f4f4;
+  padding: 25px 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  max-width: 1500px; /* increased width */
+  margin: -30px auto 40px auto; /* moved it up */
+}
+
+.create-section h3 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-weight: 600;
+  color: #333;
+}
+.create-section .form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 18px;
+}
+
+.create-section .form-control {
+  font-size: 15px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.create-section button[type="submit"] {
+  margin-top: 20px;
+  align-self: center;
+  padding: 10px 25px;
+  font-size: 16px;
+  border-radius: 6px;
+}
+
+@media (max-width: 768px) {
+  .create-section {
+    padding: 20px;
+    margin: 20px 10px;
+    max-width: 100%; /* full width on small devices */
+  }
+
+  .create-section h3 {
+    font-size: 20px;
+  }
+
+  .create-section button[type="submit"] {
+    width: 100%;
+  }
 }
 
 button {

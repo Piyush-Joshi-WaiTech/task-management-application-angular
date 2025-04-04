@@ -52,17 +52,14 @@ export class ProjectComponent implements OnInit {
     let projects = this.projectService.getProjects();
 
     if (this.editingIndex !== null) {
-      // Update the existing project
       projects[this.editingIndex] = { ...this.project };
       this.showNotification('✅ Project updated successfully!', 'success');
       this.editingIndex = null;
     } else {
-      // Add new project
       projects.push({ ...this.project, tasks: [] });
       this.showNotification('✅ Project created successfully!', 'success');
     }
 
-    // Save updated projects back to localStorage
     localStorage.setItem(`projects_${loggedInUser}`, JSON.stringify(projects));
 
     this.loadUserProjects();
@@ -70,7 +67,7 @@ export class ProjectComponent implements OnInit {
   }
 
   deleteProject(index: number, event: Event) {
-    event.stopPropagation(); // Prevent navigation when clicking "Delete"
+    event.stopPropagation();
 
     const loggedInUser = localStorage.getItem('email');
     if (!loggedInUser) return;
@@ -82,7 +79,6 @@ export class ProjectComponent implements OnInit {
     ) {
       this.projects.splice(index, 1);
 
-      // Update localStorage after deletion
       localStorage.setItem(
         `projects_${loggedInUser}`,
         JSON.stringify(this.projects)
@@ -131,7 +127,6 @@ export class ProjectComponent implements OnInit {
     this.router.navigate(['/tasks', encodeURIComponent(project.title)]);
   }
 
-  // ✅ Added updateProject() without changing original code
   updateProject() {
     if (
       !this.project.title.trim() ||
@@ -148,26 +143,22 @@ export class ProjectComponent implements OnInit {
     let projects = this.projectService.getProjects();
 
     if (this.editingIndex !== null) {
-      // Update the existing project
       projects[this.editingIndex] = { ...this.project };
       this.showNotification('✅ Project updated successfully!', 'success');
       this.editingIndex = null;
     }
 
-    // Save updated projects back to localStorage
     localStorage.setItem(`projects_${loggedInUser}`, JSON.stringify(projects));
 
     this.loadUserProjects();
     this.resetProjectForm();
 
-    // Close the Bootstrap modal after update
     const modalElement = document.getElementById('editProjectModal');
     if (modalElement) {
       (modalElement as any).classList.remove('show');
       modalElement.setAttribute('aria-hidden', 'true');
       modalElement.setAttribute('style', 'display: none;');
 
-      // Remove modal backdrop
       const modalBackdrop = document.querySelector('.modal-backdrop');
       if (modalBackdrop) {
         modalBackdrop.remove();
